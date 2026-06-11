@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bijjala Trivedh — AI Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#050810;--surface:#0d1117;--surface2:#111827;
+  --border:#1e2d40;--accent:#4f9cf9;--accent2:#a78bfa;
+  --accent3:#34d399;--text:#e2e8f0;--muted:#64748b;
+  --glow:rgba(79,156,249,0.15);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+section,header,footer,nav{position:relative;z-index:1}
+
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 2.5rem;
+  background:rgba(5,8,16,0.85);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-family:'Space Mono',monospace;font-size:1rem;color:var(--accent);letter-spacing:0.05em;text-decoration:none}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{color:var(--muted);font-size:0.85rem;text-decoration:none;transition:color 0.2s;letter-spacing:0.03em}
+.nav-links a:hover{color:var(--accent)}
+
+#hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;padding:8rem 2.5rem 4rem;
+  max-width:900px;margin:0 auto;
+}
+.hero-eyebrow{
+  font-family:'Space Mono',monospace;font-size:0.78rem;color:var(--accent3);
+  letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:0.75rem;
+}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--accent3)}
+.hero-name{
+  font-size:clamp(2.8rem,6vw,5rem);font-weight:700;line-height:1.05;margin-bottom:0.5rem;
+  background:linear-gradient(135deg,#e2e8f0 0%,#94a3b8 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-role{font-size:clamp(1.2rem,3vw,1.8rem);font-weight:500;margin-bottom:1.5rem;height:2.5rem;overflow:hidden}
+.typed-text{color:var(--accent)}
+.cursor{display:inline-block;width:3px;height:1.2em;background:var(--accent);margin-left:2px;animation:blink 1s step-end infinite;vertical-align:middle}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.hero-bio{color:var(--muted);font-size:1rem;max-width:540px;line-height:1.8;margin-bottom:2.5rem}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+.btn{
+  padding:0.7rem 1.8rem;border-radius:6px;font-size:0.9rem;font-weight:600;
+  cursor:pointer;text-decoration:none;transition:all 0.2s;
+  display:inline-flex;align-items:center;gap:0.5rem;font-family:'Space Grotesk',sans-serif;
+}
+.btn-primary{background:var(--accent);color:#050810;border:none}
+.btn-primary:hover{background:#6aabff;transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.hero-stats{
+  display:flex;gap:2.5rem;margin-top:3rem;padding-top:2.5rem;
+  border-top:1px solid var(--border);flex-wrap:wrap;
+}
+.stat-val{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--accent)}
+.stat-lbl{font-size:0.78rem;color:var(--muted);margin-top:0.2rem;letter-spacing:0.04em}
+
+.section{padding:5rem 2.5rem;max-width:960px;margin:0 auto}
+.section-tag{
+  font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--accent);
+  letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.75rem;
+  display:flex;align-items:center;gap:0.6rem;
+}
+.section-tag::before{content:'';width:20px;height:1px;background:var(--accent)}
+.section-title{
+  font-size:2rem;font-weight:700;margin-bottom:0.5rem;
+  background:linear-gradient(135deg,#e2e8f0,#94a3b8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.section-sub{color:var(--muted);font-size:0.95rem;margin-bottom:3rem}
+
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.about-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;
+  transition:border-color 0.3s,transform 0.3s;
+}
+.about-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.about-card-icon{font-size:1.5rem;margin-bottom:0.75rem}
+.about-card-title{font-weight:600;margin-bottom:0.5rem;font-size:0.95rem}
+.about-card-body{color:var(--muted);font-size:0.85rem;line-height:1.7}
+
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.skill-group{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem}
+.skill-group-title{font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--accent2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1.2rem}
+.skill-item{margin-bottom:1rem}
+.skill-header{display:flex;justify-content:space-between;margin-bottom:6px}
+.skill-name{font-size:0.85rem;color:var(--text)}
+.skill-pct{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--muted)}
+.skill-bar-bg{background:#1a2232;border-radius:3px;height:4px;overflow:hidden}
+.skill-bar-fill{height:100%;border-radius:3px;width:0;transition:width 1.2s cubic-bezier(0.4,0,0.2,1)}
+.bar-blue{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bar-green{background:linear-gradient(90deg,var(--accent3),var(--accent))}
+.bar-purple{background:linear-gradient(90deg,var(--accent2),#f472b6)}
+
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.project-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.75rem;
+  transition:all 0.3s;position:relative;overflow:hidden;display:flex;flex-direction:column;
+}
+.project-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at top left,var(--glow),transparent 60%);
+  opacity:0;transition:opacity 0.4s;
+}
+.project-card:hover::before{opacity:1}
+.project-card:hover{border-color:var(--accent);transform:translateY(-5px)}
+.project-num{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);margin-bottom:1rem}
+.project-title{font-size:1.05rem;font-weight:700;margin-bottom:0.75rem;color:var(--text)}
+.project-desc{color:var(--muted);font-size:0.85rem;line-height:1.7;margin-bottom:1.25rem;flex:1}
+.project-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.2rem}
+.tag{background:#0d1929;border:1px solid #1e3a5f;color:#60a5fa;font-size:0.72rem;font-weight:500;padding:3px 10px;border-radius:20px;font-family:'Space Mono',monospace}
+.tag.green{background:#0a1f14;border-color:#1a4731;color:var(--accent3)}
+.tag.purple{background:#130d24;border-color:#2d1f4f;color:#a78bfa}
+.project-highlight{font-size:0.8rem;color:var(--accent3);font-weight:500;display:flex;align-items:center;gap:6px;padding-top:1rem;border-top:1px solid var(--border)}
+.project-highlight::before{content:'▸';font-size:0.7rem}
+.project-links{display:flex;gap:0.6rem;margin-top:1rem;flex-wrap:wrap}
+.proj-link{
+  display:inline-flex;align-items:center;gap:5px;padding:5px 12px;
+  border-radius:6px;font-size:0.78rem;font-weight:500;text-decoration:none;
+  transition:all 0.2s;border:1px solid var(--border);color:var(--muted);
+  background:transparent;cursor:pointer;
+}
+.proj-link:hover{border-color:var(--accent);color:var(--accent)}
+.proj-link.disabled{opacity:0.4;cursor:not-allowed;pointer-events:none}
+.proj-link-icon{font-size:0.85rem}
+
+.ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.ach-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;
+  display:flex;gap:1rem;align-items:flex-start;transition:all 0.3s;
+}
+.ach-card:hover{border-color:var(--accent2);transform:translateY(-2px)}
+.ach-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.ach-icon.blue{background:#0d1929;border:1px solid #1e3a5f}
+.ach-icon.purple{background:#130d24;border:1px solid #2d1f4f}
+.ach-icon.green{background:#0a1f14;border:1px solid #1a4731}
+.ach-icon.amber{background:#1a1305;border:1px solid #3d2e0a}
+.ach-title{font-weight:600;font-size:0.9rem;margin-bottom:0.3rem}
+.ach-desc{color:var(--muted);font-size:0.82rem;line-height:1.6}
+
+.certs-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.cert-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;
+  display:flex;align-items:center;gap:0.9rem;transition:all 0.25s;
+}
+.cert-card:hover{border-color:var(--accent3);transform:translateY(-2px)}
+.cert-dot{width:8px;height:8px;border-radius:50%;background:var(--accent3);flex-shrink:0}
+.cert-name{font-size:0.85rem;font-weight:500}
+.cert-org{font-size:0.75rem;color:var(--muted)}
+
+.contact-wrap{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:3rem;
+  text-align:center;position:relative;overflow:hidden;
+}
+.contact-wrap::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(79,156,249,0.08),transparent 60%);
+}
+.contact-title{font-size:1.8rem;font-weight:700;margin-bottom:0.75rem;position:relative}
+.contact-sub{color:var(--muted);margin-bottom:2rem;font-size:0.95rem;position:relative}
+.contact-links{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;position:relative}
+.contact-link{
+  display:flex;align-items:center;gap:0.5rem;
+  background:#0d1929;border:1px solid #1e3a5f;color:var(--accent);
+  padding:0.65rem 1.4rem;border-radius:8px;text-decoration:none;
+  font-size:0.87rem;font-weight:500;transition:all 0.2s;
+}
+.contact-link:hover{background:#1e3a5f;transform:translateY(-2px)}
+.contact-link.purple{background:#130d24;border-color:#2d1f4f;color:#a78bfa}
+.contact-link.purple:hover{background:#2d1f4f}
+.contact-link.green{background:#0a1f14;border-color:#1a4731;color:var(--accent3)}
+.contact-link.green:hover{background:#1a4731}
+.contact-link.amber{background:#1a1305;border-color:#3d2e0a;color:#f59e0b}
+.contact-link.amber:hover{background:#3d2e0a}
+
+footer{text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--muted);font-size:0.8rem;font-family:'Space Mono',monospace}
+.divider{width:100%;height:1px;background:var(--border)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s,transform 0.7s}
+.reveal.visible{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<nav>
+  <a class="nav-logo" href="#hero">&lt;trivedh /&gt;</a>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#achievements">Achievements</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-eyebrow">Available for opportunities</div>
+  <div class="hero-name">Bijjala Trivedh</div>
+  <div class="hero-role"><span class="typed-text" id="typed"></span><span class="cursor"></span></div>
+  <p class="hero-bio">B.Tech AI student at Anurag University building real-world intelligent systems — from clinical NLP summarizers to RAG chatbots. I care about making AI that actually works.</p>
+  <div class="hero-btns">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="mailto:trivedhbijjala@gmail.com" class="btn btn-outline">Get in Touch</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-val">8.36</div><div class="stat-lbl">CGPA</div></div>
+    <div class="stat-item"><div class="stat-val">3+</div><div class="stat-lbl">AI / ML Projects</div></div>
+    <div class="stat-item"><div class="stat-val">50+</div><div class="stat-lbl">LeetCode Problems</div></div>
+    <div class="stat-item"><div class="stat-val">90+</div><div class="stat-lbl">Teams Led @ Visionova</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="about" class="section reveal">
+  <div class="section-tag">Who I am</div>
+  <div class="section-title">About Me</div>
+  <p class="section-sub">Final year AI student who builds, ships, and figures things out.</p>
+  <div class="about-grid">
+    <div class="about-card">
+      <div class="about-card-icon">🧬</div>
+      <div class="about-card-title">Clinical NLP</div>
+      <div class="about-card-body">Built ClinicalMind — an ontology-guided summarization system using Flan-T5 & scispaCy that hits 80%+ accuracy on synthetic clinical notes with just 4.1% hallucination rate.</div>
+    </div>
+    <div class="about-card">
+      <div class="about-card-icon">🤖</div>
+      <div class="about-card-title">Generative AI & LLMs</div>
+      <div class="about-card-body">Deep experience with LangChain, RAG pipelines, OpenAI API, and HuggingFace models. I build systems that retrieve, reason, and respond reliably.</div>
+    </div>
+    <div class="about-card">
+      <div class="about-card-icon">📐</div>
+      <div class="about-card-title">Problem Solver</div>
+      <div class="about-card-body">50+ LeetCode problems solved. I enjoy the algorithmic thinking behind ML — from efficient inference to data preprocessing pipelines.</div>
+    </div>
+    <div class="about-card">
+      <div class="about-card-icon">🎯</div>
+      <div class="about-card-title">Organiser & Leader</div>
+      <div class="about-card-body">Organising Lead of TechAmuse Club. Ran Visionova — a national-level AI hackathon with 90+ teams — end to end, from logistics to judging.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="skills" class="section reveal">
+  <div class="section-tag">What I work with</div>
+  <div class="section-title">Technical Skills</div>
+  <p class="section-sub">Languages, frameworks and tools I use to build AI systems.</p>
+  <div class="skills-grid">
+    <div class="skill-group">
+      <div class="skill-group-title">AI / ML</div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">Machine Learning</span><span class="skill-pct">90%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill bar-blue" data-w="90"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">Deep Learning / CNN</span><span class="skill-pct">82%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill bar-blue" data-w="82"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">NLP & LLMs</span><span class="skill-pct">88%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill bar-purple" data-w="88"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">Generative AI</span><span class="skill-pct">85%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill bar-purple" data-w="85"></div></div></div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Languages & Frameworks</div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">Python</span><span class="skill-pct">92%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill bar-green" data-w="92"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">TensorFlow / Keras</span><span class="skill-pct">78%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill bar-green" data-w="78"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">LangChain</span><span class="skill-pct">80%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill bar-blue" data-w="80"></div></div></div>
+      <div class="skill-item"><div class="skill-header"><span class="skill-name">Streamlit</span><span class="skill-pct">85%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill bar-green" data-w="85"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="projects" class="section reveal">
+  <div class="section-tag">What I've built</div>
+  <div class="section-title">Projects</div>
+  <p class="section-sub">Hands-on AI systems from research to deployment.</p>
+  <div class="projects-grid">
+
+    <div class="project-card">
+      <div class="project-num">01 — Featured</div>
+      <div class="project-title">ClinicalMind</div>
+      <div class="project-desc">Ontology-guided clinical NLP summarizer built with Flan-T5-Small and scispaCy. Extracts diseases, symptoms, and drugs; ranks sentences by clinical importance; generates structured summaries with ROUGE evaluation. Benchmarked against GPT-3.5.</div>
+      <div class="project-tags">
+        <span class="tag">Flan-T5</span>
+        <span class="tag purple">scispaCy</span>
+        <span class="tag green">Streamlit</span>
+        <span class="tag">ROUGE</span>
+      </div>
+      <div class="project-highlight">80%+ accuracy · 4.1% hallucination rate</div>
+      <div class="project-links">
+        <a href="https://github.com/Trivedh12" target="_blank" class="proj-link">
+          <span class="proj-link-icon">🐙</span> GitHub
+        </a>
+        <span class="proj-link disabled" title="Runs locally — not deployed">
+          <span class="proj-link-icon">🔒</span> Local Demo
+        </span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-num">02</div>
+      <div class="project-title">Multi-PDF AI Chatbot</div>
+      <div class="project-desc">RAG-based chatbot that answers questions across multiple PDF documents. Uses LangChain for orchestration, FAISS for vector search, and OpenAI/HuggingFace for generation. Deployed with a clean Streamlit interface.</div>
+      <div class="project-tags">
+        <span class="tag">LangChain</span>
+        <span class="tag">FAISS</span>
+        <span class="tag green">RAG</span>
+        <span class="tag">OpenAI API</span>
+      </div>
+      <div class="project-highlight">Semantic search across unlimited PDFs</div>
+      <div class="project-links">
+        <a href="https://github.com/Trivedh12" target="_blank" class="proj-link">
+          <span class="proj-link-icon">🐙</span> GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-num">03</div>
+      <div class="project-title">Machine Unlearning — Loan Default</div>
+      <div class="project-desc">Loan default prediction with ethical AI built in. Implemented SISA and DaRE Forest techniques to surgically remove user data without full model retraining — addressing GDPR-style privacy requirements in ML.</div>
+      <div class="project-tags">
+        <span class="tag purple">SISA</span>
+        <span class="tag purple">DaRE Forest</span>
+        <span class="tag">Random Forest</span>
+      </div>
+      <div class="project-highlight">Privacy-first ML with unlearning</div>
+      <div class="project-links">
+        <a href="https://github.com/Trivedh12" target="_blank" class="proj-link">
+          <span class="proj-link-icon">🐙</span> GitHub
+        </a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-num">04</div>
+      <div class="project-title">Medical Disease Detection</div>
+      <div class="project-desc">CNN-based system for classifying medical images. Built end-to-end: image preprocessing, model architecture, training on real-world datasets, accuracy/loss evaluation, and visualisation of predicted vs actual outputs.</div>
+      <div class="project-tags">
+        <span class="tag green">CNN</span>
+        <span class="tag green">TensorFlow</span>
+        <span class="tag green">Keras</span>
+      </div>
+      <div class="project-highlight">Medical imaging classification</div>
+      <div class="project-links">
+        <a href="https://github.com/Trivedh12" target="_blank" class="proj-link">
+          <span class="proj-link-icon">🐙</span> GitHub
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="achievements" class="section reveal">
+  <div class="section-tag">Milestones</div>
+  <div class="section-title">Achievements</div>
+  <p class="section-sub">Things I'm proud of — academic, technical, and community.</p>
+  <div class="ach-grid">
+    <div class="ach-card">
+      <div class="ach-icon blue">🎓</div>
+      <div class="ach-body">
+        <div class="ach-title">8.36 CGPA — Anurag University</div>
+        <div class="ach-desc">Consistently strong academic performance throughout B.Tech in Artificial Intelligence. Scored 10 CGPA in Class 10 and 91.6% in Intermediate.</div>
+      </div>
+    </div>
+    <div class="ach-card">
+      <div class="ach-icon purple">🏟️</div>
+      <div class="ach-body">
+        <div class="ach-title">Organised Visionova — National Hackathon</div>
+        <div class="ach-desc">Led end-to-end organisation of a national-level AI hackathon featuring 90+ teams from across India competing to build AI-powered solutions.</div>
+      </div>
+    </div>
+    <div class="ach-card">
+      <div class="ach-icon green">⚡</div>
+      <div class="ach-body">
+        <div class="ach-title">Organising Lead — TechAmuse Club</div>
+        <div class="ach-desc">Led the technical club at Anurag University, managing events, coordinating members, and fostering a culture of hands-on engineering and innovation.</div>
+      </div>
+    </div>
+    <div class="ach-card">
+      <div class="ach-icon amber">💻</div>
+      <div class="ach-body">
+        <div class="ach-title">50+ Problems — LeetCode & HackerRank</div>
+        <div class="ach-desc">Solved 50+ algorithmic problems across platforms. Active profiles on both LeetCode and HackerRank with consistent problem-solving practice.</div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.6rem;flex-wrap:wrap">
+          <a href="https://leetcode.com/u/Trivedh_bijjala/" target="_blank" class="proj-link" style="font-size:0.75rem;padding:4px 10px">⌨️ LeetCode</a>
+          <a href="https://www.hackerrank.com/profile/22eg106a07" target="_blank" class="proj-link" style="font-size:0.75rem;padding:4px 10px">🏅 HackerRank</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="certifications" class="section reveal">
+  <div class="section-tag">Verified learning</div>
+  <div class="section-title">Certifications</div>
+  <p class="section-sub">Credentials from industry leaders.</p>
+  <div class="certs-list">
+    <div class="cert-card"><div class="cert-dot" style="background:#60a5fa"></div><div><div class="cert-name">Agentforce Specialist</div><div class="cert-org">Salesforce</div></div></div>
+    <div class="cert-card"><div class="cert-dot"></div><div><div class="cert-name">Python Essentials</div><div class="cert-org">Cisco</div></div></div>
+    <div class="cert-card"><div class="cert-dot" style="background:#a78bfa"></div><div><div class="cert-name">Introduction to Java</div><div class="cert-org">Infosys Springboard</div></div></div>
+    <div class="cert-card"><div class="cert-dot" style="background:#f59e0b"></div><div><div class="cert-name">Data Visualization with Python</div><div class="cert-org">IBM</div></div></div>
+    <div class="cert-card"><div class="cert-dot" style="background:#60a5fa"></div><div><div class="cert-name">Data Analytics Essentials</div><div class="cert-org">Cisco</div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="contact" class="section reveal">
+  <div class="contact-wrap">
+    <div class="section-tag" style="justify-content:center">Let's connect</div>
+    <div class="contact-title">Open to Opportunities</div>
+    <div class="contact-sub">Internships, projects, collaborations — I'm all ears.</div>
+    <div class="contact-links">
+      <a href="mailto:trivedhbijjala@gmail.com" class="contact-link">📧 Email Me</a>
+      <a href="https://www.linkedin.com/in/trivedh-bijjala/" target="_blank" class="contact-link purple">💼 LinkedIn</a>
+      <a href="https://github.com/Trivedh12" target="_blank" class="contact-link green">🐙 GitHub</a>
+      <a href="https://leetcode.com/u/Trivedh_bijjala/" target="_blank" class="contact-link amber">⌨️ LeetCode</a>
+      <a href="https://www.hackerrank.com/profile/22eg106a07" target="_blank" class="contact-link">🏅 HackerRank</a>
+    </div>
+  </div>
+</section>
+
+<footer>&lt;built by trivedh · 2025 /&gt;</footer>
+
+<script>
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+let W,H,particles=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+function createParticle(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,size:Math.random()*1.5+0.5,alpha:Math.random()*0.4+0.1,color:Math.random()>0.5?'79,156,249':'167,139,250'}}
+for(let i=0;i<90;i++)particles.push(createParticle());
+function drawParticles(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{
+    ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${p.color},${p.alpha})`;ctx.fill();
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+  });
+  particles.forEach((p,i)=>{
+    particles.slice(i+1).forEach(q=>{
+      const dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<120){ctx.beginPath();ctx.strokeStyle=`rgba(79,156,249,${0.08*(1-d/120)})`;ctx.lineWidth=0.5;ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}
+    });
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+const phrases=['AI Engineer','NLP Enthusiast','ML Builder','Problem Solver'];
+let pi=0,ci=0,deleting=false;
+const el=document.getElementById('typed');
+function type(){
+  const phrase=phrases[pi];
+  if(!deleting){
+    if(ci<=phrase.length){el.textContent=phrase.slice(0,ci++);setTimeout(type,ci>phrase.length?1500:80)}
+    else{deleting=true;setTimeout(type,1500)}
+  } else {
+    if(ci>=0){el.textContent=phrase.slice(0,ci--);setTimeout(type,50)}
+    else{deleting=false;pi=(pi+1)%phrases.length;setTimeout(type,200)}
+  }
+}
+type();
+
+const reveals=document.querySelectorAll('.reveal');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      e.target.querySelectorAll('.skill-bar-fill').forEach(b=>setTimeout(()=>{b.style.width=b.dataset.w+'%'},200));
+    }
+  });
+},{threshold:0.15});
+reveals.forEach(r=>io.observe(r));
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
